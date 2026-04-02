@@ -1,4 +1,4 @@
-# 🌍 Premium Travel Agency Application
+# Premium Travel Agency Application
 
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
@@ -9,7 +9,7 @@ A full-stack, production-ready Travel Agency booking application built with Node
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **BookMyShow-Style Seat Matrix**: Intuitive seat grid selection UI equipped with row labels and real-time available/booked rendering.
 - **Premium Checkout Simulation**: A realistic Stripe-like payment page with synchronized credit card preview, floating labels, loading spinners, and CSS Confetti.
@@ -20,7 +20,7 @@ A full-stack, production-ready Travel Agency booking application built with Node
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB (Mongoose ORM)
@@ -31,7 +31,7 @@ A full-stack, production-ready Travel Agency booking application built with Node
 
 ---
 
-## 📂 Folder Structure
+## Folder Structure
 
 ```text
 Travel-Agency/
@@ -87,7 +87,7 @@ Travel-Agency/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - Node.js (v18+)
