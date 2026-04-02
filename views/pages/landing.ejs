@@ -5,33 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .hero {
+            position: relative;
+            height: 85vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -80px; /* Offset navbar */
+        }
+        
+        .hero video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -2;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: #ffffff;
+            z-index: 10;
+            padding: 0 2rem;
+            max-width: 900px;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(to right, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: white; /* Fallback */
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            color: #e2e8f0;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .hero-btn {
+            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+        }
+
+        /* Testimonial Section */
+        .testimonials {
+            background: var(--bg-color);
+            padding: 5rem 0;
+            text-align: center;
+        }
+        .testimonial-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            text-align: left;
+            position: relative;
+        }
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 10px; right: 20px;
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+    </style>
 </head>
 <body>
     <%- include('../partials/navbar') %>
 
-    <div class="container">
-        <%- include('../partials/flash') %>
+    <!-- Hero Section -->
+    <section class="hero">
+        <video autoplay muted loop playsinline>
+            <!-- Using a high quality creative commons travel footage placeholder -->
+            <source src="https://cdn.pixabay.com/video/2019/11/17/29088-372990666_large.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Explore the World with Us 🌍</h1>
+            <p class="hero-subtitle">Premium travel experiences curated for the modern adventurer. Discover curated paths, exclusive destinations, and seamless booking.</p>
+            <a href="/home" class="btn hero-btn">Start Your Journey</a>
+        </div>
+    </section>
 
-        <div style="text-align: center; margin: 4rem 0;">
-            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);">Discover Your Next Adventure</h1>
-            <p style="font-size: 1.2rem; color: var(--text-color); margin-bottom: 2rem;">Explore the world with our premium travel packages. Book your trip today!</p>
-            <a href="/login" class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Journey</a>
+    <div class="container fade-in" style="margin-top: 5rem;">
+        <div class="text-center mb-4">
+            <h2 style="font-size: 2.5rem;">Featured Destinations</h2>
+            <p style="color: var(--text-color); font-size: 1.1rem; max-width: 600px; margin: 1rem auto 3rem;">Hand-picked premium experiences for our top tier travelers.</p>
         </div>
 
-        <h2 style="margin-bottom: 1rem;">Popular Destinations</h2>
         <div class="grid">
-            <% packages.forEach(pkg => { %>
-                <div class="card">
+            <% packages.forEach((pkg, index) => { %>
+                <div class="card stagger-<%= index + 1 %>">
                     <img src="<%= pkg.image %>" alt="<%= pkg.title %>">
                     <div class="card-body">
-                        <h3><%= pkg.title %></h3>
-                        <p style="margin: 0.5rem 0;"><%= pkg.description.substring(0, 50) %>...</p>
-                        <p><strong>$<%= pkg.price %></strong></p>
+                        <h3 style="margin-bottom: 0.5rem;"><%= pkg.title %></h3>
+                        <p style="color: var(--text-color); opacity: 0.8; margin-bottom: 1rem; flex-grow: 1;">
+                            <%= pkg.description.substring(0, 100) %>...
+                        </p>
+                        <p style="margin-bottom: 1.5rem; font-size: 1.25rem;">
+                            <strong>₹<%= pkg.price.toLocaleString('en-IN') %></strong> <span style="font-size: 0.9rem; opacity: 0.7;">/ person</span>
+                        </p>
+                        <a href="/login" class="btn text-center" style="width: 100%;">Log in to Book</a>
                     </div>
                 </div>
             <% }) %>
         </div>
     </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 3rem;">What Our Travelers Say</h2>
+            <div class="grid">
+                <div class="testimonial-card">
+                    <p style="font-style: italic; margin-bottom: 1.5rem; font-size: 1.1rem;">"The booking experience was completely seamless. BookMyShow-style seat selection for the European train package was brilliant and very assuring!"</p>
+                    <h4 style="color: var(--primary-color);">— Elena R.</h4>
+                </div>
+                <div class="testimonial-card">
+                    <p style="font-style: italic; margin-bottom: 1.5rem; font-size: 1.1rem;">"Their checkout interface is absolutely world-class. From the confetti animations to the instant receipt generation, it feels incredibly premium."</p>
+                    <h4 style="color: var(--primary-color);">— Marcus T.</h4>
+                </div>
+                <div class="testimonial-card">
+                    <p style="font-style: italic; margin-bottom: 1.5rem; font-size: 1.1rem;">"I've used many travel agencies before, but the Dark Mode UI and gorgeous invoice system they have built here is next-level. Highly recommended."</p>
+                    <h4 style="color: var(--primary-color);">— Sarah K.</h4>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <%- include('../partials/footer') %>
     <script src="/js/themeToggle.js"></script>

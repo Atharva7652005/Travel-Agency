@@ -6,94 +6,193 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .receipt-card {
-            max-width: 600px;
-            margin: 2rem auto;
-            border: 2px dashed var(--border-color);
+        .boarding-pass-wrapper {
+            max-width: 750px;
+            margin: 3rem auto;
+            display: flex;
             background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-hover);
+            position: relative;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .pass-left {
+            flex: 2;
             padding: 3rem;
+            border-right: 2px dashed var(--border-color);
             position: relative;
         }
-        .receipt-header {
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .receipt-row {
+
+        .pass-right {
+            flex: 1;
+            padding: 3rem;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-color);
         }
+
+        .cutout-top, .cutout-bottom {
+            position: absolute;
+            right: -16px;
+            width: 30px; height: 30px;
+            background: var(--bg-color); /* Match background */
+            border-radius: 50%;
+            border-left: 1px solid var(--border-color); /* Border continuity */
+        }
+        
+        .cutout-top { top: -15px; }
+        .cutout-bottom { bottom: -15px; }
+
+        .pass-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 2.5rem; border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem 1rem;
+        }
+
+        .data-group h5 {
+            color: var(--text-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+        .data-group p {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--heading-color);
+        }
+
+        .qr-placeholder {
+            width: 140px; height: 140px;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .qr-placeholder img {
+            width: 100%; height: 100%; display: block;
+        }
+
         .paid-stamp {
             position: absolute;
             top: 2rem;
-            right: 2rem;
+            left: 2rem;
             color: var(--seat-selected);
             border: 4px solid var(--seat-selected);
-            font-weight: bold;
-            font-size: 1.5rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 5px;
             padding: 0.5rem 1rem;
-            transform: rotate(15deg);
-            opacity: 0.8;
-            border-radius: 0.5rem;
+            transform: rotate(-15deg);
+            opacity: 0.2;
+            pointer-events: none;
         }
+
         @media print {
             .navbar, .footer, .btn, .theme-toggle { display: none !important; }
-            body { background: white !important; color: black !important; }
-            .receipt-card { border: none !important; box-shadow: none !important; }
+            body { background: white !important; padding: 0; margin: 0; }
+            .boarding-pass-wrapper { 
+                box-shadow: none !important; 
+                border: 2px solid #ccc !important;
+                margin: 0 !important;
+            }
+            .pass-right { background: #f8fafc !important; }
+        }
+        @media (max-width: 650px) {
+            .boarding-pass-wrapper { flex-direction: column; }
+            .pass-left { border-right: none; border-bottom: 2px dashed var(--border-color); }
+            .cutout-top, .cutout-bottom { display: none; }
         }
     </style>
 </head>
 <body>
     <%- include('../partials/navbar') %>
 
-    <div class="container">
-        <div class="receipt-card fade-in">
-            <div class="paid-stamp">PAID</div>
+    <div class="container fade-in">
+        
+        <div class="text-center mb-4">
+            <h2 style="font-size: 2.25rem;">Your Boarding Pass</h2>
+            <p>Keep this document handy for your upcoming journey.</p>
+        </div>
+
+        <div class="boarding-pass-wrapper stagger-1">
+            <div class="paid-stamp">CONFIRMED</div>
             
-            <div class="receipt-header">
-                <h2>Travel Agency Booking Receipt</h2>
-                <p>Transaction ID: #<%= booking._id %></p>
-            </div>
-            
-            <div class="receipt-row">
-                <span><strong>Passenger:</strong></span>
-                <span><%= booking.userId ? booking.userId.name : 'Unknown Passenger' %></span>
-            </div>
-            
-            <div class="receipt-row">
-                <span><strong>Travel Package:</strong></span>
-                <span><%= booking.packageId.title %></span>
-            </div>
-            
-            <div class="receipt-row">
-                <span><strong>Travel Date:</strong></span>
-                <span><%= new Date(booking.packageId.date).toLocaleDateString() %></span>
+            <!-- Left Ticket Main Data -->
+            <div class="pass-left">
+                <div class="cutout-top"></div>
+                <div class="cutout-bottom"></div>
+
+                <div class="pass-header">
+                    <h1 style="font-size: 2rem; color: var(--primary-color);">Ticket</h1>
+                    <div style="text-align: right;">
+                        <span style="font-weight: bold; font-family: monospace;">TXN: <%= booking._id.toString().slice(-8).toUpperCase() %></span>
+                    </div>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-group">
+                        <h5>Passenger</h5>
+                        <p><%= booking.userId ? booking.userId.name.toUpperCase() : 'UNKNOWN' %></p>
+                    </div>
+                    <div class="data-group">
+                        <h5>Travel Package</h5>
+                        <p><%= booking.packageId.title %></p>
+                    </div>
+                    <div class="data-group">
+                        <h5>Travel Date</h5>
+                        <p><%= new Date(booking.packageId.date).toLocaleDateString('en-GB') %></p>
+                    </div>
+                    <div class="data-group">
+                        <h5>Total Paid</h5>
+                        <p style="color: var(--primary-color);">₹<%= booking.totalPrice.toLocaleString('en-IN') %></p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px dotted var(--border-color);">
+                    <h5 style="color: var(--text-color); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 1px;">Selected Seats (<%= booking.selectedSeats.length %>)</h5>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <% booking.selectedSeats.forEach(seat => { %>
+                            <span style="background: var(--bg-color); color: var(--heading-color); font-weight: bold; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color);"><%= seat %></span>
+                        <% }) %>
+                    </div>
+                </div>
             </div>
 
-            <div class="receipt-row">
-                <span><strong>Booking Date:</strong></span>
-                <span><%= new Date(booking.bookingDate).toLocaleDateString() %></span>
+            <!-- Right Ticket Stub / QR -->
+            <div class="pass-right">
+                <div class="qr-placeholder mb-3">
+                    <!-- High quality Fake Barcode generated via public URL for aesthetic purposes -->
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<%= booking._id %>&color=4f46e5" alt="QR Code">
+                </div>
+                <div class="data-group text-center">
+                    <h5>GATE / GROUP</h5>
+                    <p style="font-size: 2rem;">G-12</p>
+                </div>
             </div>
+        </div>
 
-            <div class="receipt-row">
-                <span><strong>Seats Booked (<%= booking.selectedSeats.length %>):</strong></span>
-                <span><%= booking.selectedSeats.join(', ') %></span>
-            </div>
-
-            <hr style="border: 0; border-top: 2px solid var(--border-color); margin: 2rem 0;">
-
-            <div class="receipt-row" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">
-                <span>Total Paid:</span>
-                <span>₹<%= booking.totalPrice.toLocaleString('en-IN') %></span>
-            </div>
-            
-            <div class="text-center mt-4">
-                <button onclick="window.print()" class="btn" style="margin-right: 1rem;">🖨️ Print Receipt</button>
-                <a href="/my-bookings" class="btn" style="background-color: var(--seat-available); color: var(--heading-color) !important;">Back to Bookings</a>
-            </div>
+        <div class="text-center mt-4 stagger-2">
+            <button onclick="window.print()" class="btn" style="margin-right: 1rem; padding: 1rem 2rem;">
+                 🖨️ Print Ticket
+            </button>
+            <a href="/my-bookings" class="btn" style="background: var(--seat-available); color: var(--heading-color) !important; padding: 1rem 2rem;">
+                 Dashboard
+            </a>
         </div>
     </div>
 

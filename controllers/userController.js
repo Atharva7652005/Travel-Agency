@@ -60,8 +60,19 @@ const postBookPackage = async (req, res) => {
         
         const travelPackage = await TravelPackage.findById(req.params.id);
         
+        // Strict availability validation
         if (travelPackage.availableSeats < seatsArray.length) {
             req.flash('error', 'Not enough available seats');
+            return res.redirect(`/package/${req.params.id}`);
+        }
+
+        // Strict collision validation based on requested seats vs actually paid bookings
+        const existingPaidBookings = await Booking.find({ packageId: req.params.id, paymentStatus: 'Paid' });
+        const existingTakenSeats = existingPaidBookings.reduce((acc, b) => acc.concat(b.selectedSeats), []);
+        const hasSeatCollision = seatsArray.some(seat => existingTakenSeats.includes(seat));
+
+        if (hasSeatCollision) {
+            req.flash('error', 'One or more selected seats are already booked.');
             return res.redirect(`/package/${req.params.id}`);
         }
 
@@ -106,9 +117,20 @@ const postConfirmPayment = async (req, res) => {
             return res.json({ success: false, message: 'Invalid or already paid booking' });
         }
 
+        // Validate if seats were snatched while user was typing CC
+        const confirmedBookings = await Booking.find({ packageId: booking.packageId, paymentStatus: 'Paid' });
+        const takenSeats = confirmedBookings.reduce((acc, b) => acc.concat(b.selectedSeats), []);
+        const hasCollision = booking.selectedSeats.some(seat => takenSeats.includes(seat));
+
+        if (hasCollision) {
+            booking.paymentStatus = 'Pending'; // Remains failed/pending
+            await booking.save();
+            return res.json({ success: false, message: 'Sorry! One or more of these seats were just booked by someone else during checkout.' });
+        }
+
         const travelPackage = await TravelPackage.findById(booking.packageId);
         
-        // Deduct seats now
+        // Deduct seats securely
         travelPackage.availableSeats -= booking.selectedSeats.length;
         await travelPackage.save();
 
