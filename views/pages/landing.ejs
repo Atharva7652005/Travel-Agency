@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+        <%- include('../partials/flash') %>
+
+        <div style="text-align: center; margin: 4rem 0;">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);">Discover Your Next Adventure</h1>
+            <p style="font-size: 1.2rem; color: var(--text-color); margin-bottom: 2rem;">Explore the world with our premium travel packages. Book your trip today!</p>
+            <a href="/login" class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Journey</a>
+        </div>
+
+        <h2 style="margin-bottom: 1rem;">Popular Destinations</h2>
+        <div class="grid">
+            <% packages.forEach(pkg => { %>
+                <div class="card">
+                    <img src="<%= pkg.image %>" alt="<%= pkg.title %>">
+                    <div class="card-body">
+                        <h3><%= pkg.title %></h3>
+                        <p style="margin: 0.5rem 0;"><%= pkg.description.substring(0, 50) %>...</p>
+                        <p><strong>$<%= pkg.price %></strong></p>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+</body>
+</html>

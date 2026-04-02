@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+        <%- include('../partials/flash') %>
+
+        <div class="card" style="margin-top: 2rem;">
+            <img src="<%= travelPackage.image %>" alt="<%= travelPackage.title %>" style="height: 400px;">
+            <div class="card-body">
+                <h2><%= travelPackage.title %></h2>
+                <p style="font-size: 1.1rem; margin: 1rem 0;"><%= travelPackage.description %></p>
+                
+                <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <p><strong>Price:</strong> ₹<%= travelPackage.price.toLocaleString('en-IN') %></p>
+                    <p><strong>Total Seats:</strong> <%= travelPackage.totalSeats %></p>
+                    <p><strong>Available Seats:</strong> <%= travelPackage.availableSeats %></p>
+                    <p><strong>Date:</strong> <%= new Date(travelPackage.date).toLocaleDateString() %></p>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+                <h3>Select Your Seats</h3>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: var(--seat-available);"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: var(--seat-selected);"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: var(--seat-booked);"></div>
+                        <span>Booked</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Seat Grid Container -->
+                <div id="seat-container" class="seat-container" 
+                     data-total="<%= travelPackage.totalSeats %>" 
+                     data-price="<%= travelPackage.price %>" 
+                     data-taken="<%= takenSeats %>">
+                </div>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <h4>Total Price: <span id="total-price">₹0</span></h4>
+                </div>
+
+                <!-- Booking Form -->
+                <form action="/book/<%= travelPackage._id %>" method="POST" style="text-align: center; margin-top: 2rem;">
+                    <input type="hidden" name="selectedSeats" id="selected-seats-input">
+                    <button type="submit" id="book-btn" class="btn" style="padding: 1rem 3rem; font-size: 1.1rem;" disabled>Book Now!</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+    <script src="/js/seatSelection.js"></script>
+</body>
+</html>

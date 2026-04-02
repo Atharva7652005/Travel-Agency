@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+        <%- include('../partials/flash') %>
+        
+        <h1 style="margin-bottom: 2rem;">Available Travel Packages</h1>
+        
+        <div class="grid">
+            <% if (packages.length === 0) { %>
+                <p>No travel packages available at the moment.</p>
+            <% } else { %>
+                <% packages.forEach(pkg => { %>
+                    <div class="card">
+                        <img src="<%= pkg.image %>" alt="<%= pkg.title %>">
+                        <div class="card-body">
+                            <h3><%= pkg.title %></h3>
+                            <p style="margin: 0.5rem 0; color: var(--text-color); opacity: 0.8;">
+                                <%= pkg.description.substring(0, 100) %>...
+                            </p>
+                            <p style="margin-bottom: 1rem;">
+                                <strong>₹<%= pkg.price.toLocaleString('en-IN') %></strong> / person
+                            </p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.9rem;">
+                                    Seats left: <%= pkg.availableSeats %>
+                                </span>
+                                <a href="/package/<%= pkg._id %>" class="btn">View & Book</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .booking-card {
+            display: flex;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .booking-img {
+            width: 300px;
+            object-fit: cover;
+        }
+        .booking-info {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+        @media (max-width: 768px) {
+            .booking-card {
+                flex-direction: column;
+            }
+            .booking-img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+        <%- include('../partials/flash') %>
+
+        <h1 style="margin-bottom: 2rem;">My Bookings</h1>
+
+        <% if (bookings.length === 0) { %>
+            <p>You have no bookings yet. Time to explore!</p>
+            <a href="/home" class="btn" style="margin-top: 1rem;">Explore Packages</a>
+        <% } else { %>
+            <% bookings.forEach(booking => { %>
+                <div class="booking-card">
+                    <img src="<%= booking.packageId.image %>" class="booking-img" alt="<%= booking.packageId.title %>">
+                    <div class="booking-info">
+                        <h2><%= booking.packageId.title %></h2>
+                        <p style="margin: 0.5rem 0; color: var(--text-color); opacity: 0.8;">Date: <%= new Date(booking.packageId.date).toLocaleDateString() %></p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Booking Date:</strong> <%= new Date(booking.bookingDate).toLocaleDateString() %></p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Selected Seats:</strong> <%= booking.selectedSeats.join(', ') %></p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Total Price:</strong> ₹<%= booking.totalPrice.toLocaleString('en-IN') %></p>
+                        <p style="margin-bottom: 1.5rem;">
+                            <strong>Status:</strong> 
+                            <% if (booking.paymentStatus === 'Paid') { %>
+                                <span style="color: var(--seat-selected); font-weight: 600;"><%= booking.paymentStatus %></span>
+                            <% } else { %>
+                                <span style="color: #f59e0b; font-weight: 600;"><%= booking.paymentStatus %></span>
+                            <% } %>
+                        </p>
+                        
+                        <% if (booking.paymentStatus === 'Paid') { %>
+                            <a href="/receipt/<%= booking._id %>" class="btn" style="background-color: var(--seat-selected);">View Receipt</a>
+                        <% } else { %>
+                            <a href="/payment/<%= booking._id %>" class="btn">Proceed to Pay</a>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+</body>
+</html>

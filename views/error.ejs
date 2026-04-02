@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <div class="container" style="text-align: center; margin-top: 4rem;">
+        <h1 style="color: var(--seat-booked); font-size: 3rem; margin-bottom: 1rem;">Whoops! Error</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;"><%= message %></p>
+        
+        <% if (stack && stack !== '🥞') { %>
+            <div style="text-align: left; background: #fee2e2; padding: 1rem; border-radius: 0.5rem; color: #991b1b; overflow-x: auto;">
+                <pre><%= stack %></pre>
+            </div>
+        <% } %>
+
+        <a href="/" class="btn" style="margin-top: 2rem;">Return Home</a>
+    </div>
+
+    <%- include('partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+</body>
+</html>

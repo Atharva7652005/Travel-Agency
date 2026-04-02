@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background-color: var(--card-bg);
+        }
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+        <%- include('../partials/flash') %>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>Admin Dashboard</h1>
+            <a href="/admin/add-package" class="btn">Add New Package</a>
+        </div>
+
+        <!-- Manage Packages -->
+        <h2>Manage Packages</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Total Seats</th>
+                        <th>Available Seats</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (packages.length === 0) { %>
+                        <tr>
+                            <td colspan="6" style="text-align: center;">No packages found.</td>
+                        </tr>
+                    <% } else { %>
+                        <% packages.forEach(pkg => { %>
+                            <tr>
+                                <td><%= pkg.title %></td>
+                                <td>₹<%= pkg.price.toLocaleString('en-IN') %></td>
+                                <td><%= pkg.totalSeats %></td>
+                                <td><%= pkg.availableSeats %></td>
+                                <td><%= new Date(pkg.date).toLocaleDateString() %></td>
+                                <td>
+                                    <form action="/admin/delete/<%= pkg._id %>" method="POST" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this package?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- System Bookings -->
+        <h2 style="margin-top: 3rem;">Recent Bookings</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Package</th>
+                        <th>Seats</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Booking Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (bookings.length === 0) { %>
+                        <tr>
+                            <td colspan="6" style="text-align: center;">No bookings found.</td>
+                        </tr>
+                    <% } else { %>
+                        <% bookings.forEach(booking => { %>
+                            <tr>
+                                <td><%= booking.userId ? booking.userId.name : 'Unknown User' %></td>
+                                <td><%= booking.packageId ? booking.packageId.title : 'Deleted Package' %></td>
+                                <td><%= booking.selectedSeats.join(', ') %></td>
+                                <td>₹<%= booking.totalPrice.toLocaleString('en-IN') %></td>
+                                <td>
+                                    <% if (booking.paymentStatus === 'Paid') { %>
+                                        <span style="font-weight: 600; color: var(--seat-selected);"><%= booking.paymentStatus %></span>
+                                    <% } else { %>
+                                        <span style="font-weight: 600; color: #f59e0b;"><%= booking.paymentStatus %></span>
+                                    <% } %>
+                                </td>
+                                <td><%= new Date(booking.bookingDate).toLocaleDateString() %></td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/js/themeToggle.js"></script>
+</body>
+</html>
